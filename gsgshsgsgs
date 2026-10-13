@@ -1,0 +1,25 @@
+import discord
+from discord.ext import commands
+
+intents = discord.Intents.default()
+intents.message_content = True
+intents.guilds = True
+intents.voice_states = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+VOICE_CHANNEL_ID = 1559378902290276482
+
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user.name}")
+    channel = bot.get_channel(VOICE_CHANNEL_ID)
+    if channel and isinstance(channel, discord.VoiceChannel):
+        try:
+            if not discord.utils.get(bot.voice_clients, guild=channel.guild):
+                await channel.connect()
+                print(f"Connected to voice channel: {channel.name}")
+        except Exception as e:
+            print(f"Failed to connect: {e}")
+
+bot.run("YOUR_BOT_TOKEN")
